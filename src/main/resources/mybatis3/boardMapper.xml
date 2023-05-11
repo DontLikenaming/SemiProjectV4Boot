@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+    <select id="selectBoard" statementType="PREPARED"
+            parameterType="Integer"
+            resultType="dontlikenaming.springboot.semiprojectv5.model.Board">
+        select bno, title, userid, thumbs, views, regdate from board order by bno desc limit #{stdno}, 10
+    </select>
+
+    <select id="countBoard" statementType="PREPARED"
+            resultType="Integer">
+        select ceil(count(bno)/10) cnt from board
+    </select>
+
+    <!-- 동적 질의문으로 검색 기능 구현 -->
+    <!-- 컬럼 이름이나 테이블 이름에는 #{}이 아닌 ${}를 써야함 -->
+    <select id="selectFindBoard" statementType="PREPARED"
+            parameterType="map"
+            resultType="dontlikenaming.springboot.semiprojectv5.model.Board">
+        select bno, title, userid, thumbs, views, regdate from board where
+        <if test="ftype != 'titcont'">
+            ${ftype} like concat('%',#{fkey},'%')
+        </if>
+        <if test="ftype == 'titcont'">
+            title like concat('%',#{fkey},'%') or content like concat('%',#{fkey},'%')
+        </if>
+        order by bno desc limit #{stdno}, 10
+
+    </select>
+
+    <select id="countFindBoard" statementType="PREPARED"
+            parameterType="map"
+            resultType="Integer">
+        select ceil(count(bno)/10) cnt from board where
+        <if test="ftype != 'titcont'">
+            ${ftype} like concat('%',#{fkey},'%')
+        </if>
+        <if test="ftype == 'titcont'">
+            title like concat('%',#{fkey},'%') or content like concat('%',#{fkey},'%')
+        </if>
+    </select>
+
+    <insert id="insertBoard" statementType="PREPARED"
+            parameterType="dontlikenaming.springboot.semiprojectv5.model.Board">
+        insert into board (title, userid, content) values (#{title}, #{userid}, #{content})
+    </insert>
+
+    <select id="selectOneBoard" statementType="PREPARED"
+            parameterType="Integer"
+            resultType="dontlikenaming.springboot.semiprojectv5.model.Board">
+        select * from board where bno = #{bno}
+    </select>
+
+    <update id="updateViewBoard" statementType="PREPARED"
+            parameterType="Integer">
+        update board set views = views + 1 where bno = #{bno}
+    </update>
+
+    <select id="selectAllBoard" statementType="PREPARED"
+            resultType="Integer">
+        select count(bno) cnt from board
+    </select>
+</mapper>
