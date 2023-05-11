@@ -66,11 +66,6 @@ const addrclose = document.querySelector("#addrclose");
 const email3 = document.querySelector("#email3");
 const joinbtn = document.querySelector("#joinbtn");
 let modal = null;
-try{
-    modal = new bootstrap.Modal(zipmodal, {});
-} catch (e) {
-
-}
 
 
 const styleCheckuid = (chkuid) => {
@@ -137,9 +132,14 @@ reppsswd?.addEventListener("blur", ()=>{
 })
 
 zipmdbtn?.addEventListener("click",()=>{
-    dong.value = '';
     while (addrlist.lastChild){
         addrlist.removeChild(addrlist.lastChild);
+    }
+    dong.value = '';
+    try{
+        modal = new bootstrap.Modal(zipmodal, {});
+    } catch (e) {
+
     }
     modal.show();
 })
